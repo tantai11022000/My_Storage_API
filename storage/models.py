@@ -1,9 +1,6 @@
 import os
-from pickle import TRUE
-
-
 from django.db import models
-from pyparsing import GoToColumn
+
 
 # Create your models here.
 
