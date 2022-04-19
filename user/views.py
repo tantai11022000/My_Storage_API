@@ -1,16 +1,34 @@
-from distutils.command.config import config
-from os import access
-import string
-from urllib import response
+from typing_extensions import Required
 import jwt
+from pkg_resources import require
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
 from My_Storage_API.settings import SECRET_KEY, SIMPLE_JWT
-import user
 from .serializers import CustomerSerializer
 from .models import Customer
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+login_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'email': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+    },
+    required=['email', 'password']
+)
+
+change_password_schema = openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'id': openapi.Schema(type=openapi.TYPE_NUMBER, description='number'),
+        'oldpassword': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+        'newpassword': openapi.Schema(type=openapi.TYPE_STRING, description='string'),
+    },
+    required=['id', 'newpassword','oldpassword']
+)
+
 
 def checkCustomerByEmail(email):
     try:
@@ -40,6 +58,8 @@ def checkToken(request,nameCookie):
             return  jwt.decode(refreshToken,key=SIMPLE_JWT['SIGNING_KEY'],algorithms=[SIMPLE_JWT['ALGORITHM']]).get(nameCookie)    
         except:
             return Response({"Message":"Hết hạn đăng nhập","error":True})
+
+@swagger_auto_schema(method='POST',request_body=login_schema)
 @api_view(["POST"])
 def login_customer(request):
     try:
@@ -67,6 +87,7 @@ def get_customer_by_id(request,id):
         return Response(serializer.data)
     return check
 
+@swagger_auto_schema(method='POST',request_body=CustomerSerializer)
 @api_view(["POST"])
 def create_customer(request):
     if checkCustomerByEmail(request.data.get("email")) == 1:
@@ -79,7 +100,7 @@ def create_customer(request):
         return Response({"message":"Đăng ký thành công","error":False})
     return Response({"message":"Có lỗi trong quá trình đăng ký","error":True})
     
-
+@swagger_auto_schema(method="POST",request_body=change_password_schema)
 @api_view(["POST"])
 def change_password(request):
     check = checkToken(request,"user_id")
@@ -100,6 +121,7 @@ def change_password(request):
             return Response({"message":"Mật khẩu cũ không chính xác","error":True})
     return check
 
+@swagger_auto_schema(method="POST",request_body=CustomerSerializer)
 @api_view(["POST"])
 def change_info(request):
     check = checkToken(request,"user_id")
