@@ -1,6 +1,8 @@
 import os
 from django.db import models
 
+from My_Storage_API.settings import MEDIA_ROOT, MEDIA_URL
+
 
 # Create your models here.
 
@@ -33,8 +35,8 @@ class Goods(models.Model):
     kind = models.ForeignKey(TypeGoods, on_delete=models.SET_NULL, null=True, blank=True)
     desc = models.TextField(blank=True)
     out_of_stock = models.BooleanField(default=False)
-    size = models.CharField(max_length=100,unique=True)
-    color = models.CharField(max_length=100,unique=True)
+    size = models.CharField(max_length=100)
+    color = models.CharField(max_length=100)
     def __str__(self):
         return self.code
 

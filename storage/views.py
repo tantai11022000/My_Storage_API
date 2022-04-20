@@ -1,16 +1,17 @@
-from pkg_resources import require
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import GoodsSerializer
-from storage.models import Goods
+from .serializers import GoodsSerializer, ImgGoodsSerializer
+from storage.models import Goods, ImgGoods
 from django.db.models import Q
 from functools import reduce
 from operator import or_
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from My_Storage_API.settings import BASE_DIR, MEDIA_ROOT
+
+
 categories_param = openapi.Parameter('categories', openapi.IN_QUERY, description="String", type=openapi.TYPE_STRING)
 colors_param = openapi.Parameter('colors', openapi.IN_QUERY, description="String", type=openapi.TYPE_STRING)
-
 @swagger_auto_schema(method="GET",manual_parameters= [categories_param,colors_param])
 @api_view(["GET"])
 def get_list_goods(request,offset,limit):
