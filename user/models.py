@@ -4,7 +4,7 @@ class Customer(models.Model):
     email = models.EmailField(max_length=200,unique=True)
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=250,blank=True)
-    phone = models.CharField(max_length=13,unique=True)
+    phone = models.CharField(max_length=13)
     ranking_discount = models.CharField(max_length=20, blank=True, default="basic")
     birthday = models.DateField(blank=True, null=True)
     password = models.CharField(max_length=32)
