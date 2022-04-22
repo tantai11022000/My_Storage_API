@@ -92,8 +92,6 @@ def get_customer_by_id(request,id):
 def create_customer(request):
     if checkCustomerByEmail(request.data.get("email")) == 1:
         return Response({"message":"Email đã tồn tại","error":True})
-    if checkCustomerByPhone(request.data.get("phone")) == 1:
-        return Response({"message":"Số điện thoại đã tồn tại","error":True})
     serializer = CustomerSerializer(data = request.data)
     if serializer.is_valid():
         serializer.save()
